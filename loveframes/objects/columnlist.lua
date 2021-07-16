@@ -14,7 +14,7 @@ local newobject = loveframes.NewObject("columnlist", "loveframes_object_columnli
 	- desc: intializes the element
 --]]---------------------------------------------------------
 function newobject:initialize()
-	
+
 	self.type = "columnlist"
 	self.width = 300
 	self.height = 100
@@ -39,7 +39,7 @@ function newobject:initialize()
 
 	local list = loveframes.objects["columnlistarea"]:new(self)
 	table.insert(self.internals, list)
-	
+
 	self:SetDrawFunc()
 end
 
@@ -48,48 +48,48 @@ end
 	- desc: updates the object
 --]]---------------------------------------------------------
 function newobject:update(dt)
-	
+
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
-	
+
 	if not visible then
 		if not alwaysupdate then
 			return
 		end
 	end
-	
+
 	local parent = self.parent
 	local base = loveframes.base
 	local children = self.children
 	local internals = self.internals
 	local update = self.Update
-	
+
 	self:CheckHover()
-	
+
 	-- move to parent if there is a parent
 	if parent ~= base then
 		self.x = self.parent.x + self.staticx
 		self.y = self.parent.y + self.staticy
 	end
-	
+
 	for k, v in ipairs(internals) do
 		v:update(dt)
 	end
-	
+
 	for k, v in ipairs(children) do
 		v.columnid = k
 		v:update(dt)
 	end
-	
+
 	self.startadjustment = false
-	
+
 	if update then
 		update(self, dt)
 	end
@@ -108,49 +108,49 @@ function newobject:draw()
 	if not self.visible then
 		return
 	end
-	
+
 	local vbody = self.internals[1]:GetVerticalScrollBody()
 	local hbody = self.internals[1]:GetHorizontalScrollBody()
 	local width = self.width
 	local height = self.height
-	
+
 	if vbody then
 		width = width - vbody.width
 	end
-	
+
 	if hbody then
 		height = height - hbody.height
 	end
-	
+
 	local stencilfunc = function()
 		love.graphics.rectangle("fill", self.x, self.y, width, height)
 	end
-	
+
 	-- set the object's draw order
 	self:SetDrawOrder()
-		
+
 	local drawfunc = self.Draw or self.drawfunc
 	if drawfunc then
 		drawfunc(self)
 	end
-	
+
 	local internals = self.internals
 	if internals then
 		for k, v in ipairs(internals) do
 			v:draw()
 		end
 	end
-	
+
 	love.graphics.stencil(stencilfunc)
 	love.graphics.setStencilTest("greater", 0)
-	
+
 	local children = self.children
 	if children then
 		for k, v in ipairs(children) do
 			v:draw()
 		end
 	end
-	
+
 	local drawfunc = self.DrawOver or self.drawoverfunc
 	if drawfunc then
 		drawfunc(self)
@@ -167,36 +167,36 @@ function newobject:mousepressed(x, y, button)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local hover = self.hover
 	local children  = self.children
 	local internals = self.internals
-	
+
 	if hover and button == 1 then
 		local baseparent = self:GetBaseParent()
 		if baseparent and baseparent.type == "frame" then
 			baseparent:MakeTop()
 		end
 	end
-	
+
 	for k, v in ipairs(internals) do
 		v:mousepressed(x, y, button)
 	end
-	
+
 	for k, v in ipairs(children) do
 		v:mousepressed(x, y, button)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -207,28 +207,28 @@ function newobject:mousereleased(x, y, button)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local children = self.children
 	local internals = self.internals
-	
+
 	for k, v in ipairs(internals) do
 		v:mousereleased(x, y, button)
 	end
-	
+
 	for k, v in ipairs(children) do
 		v:mousereleased(x, y, button)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -236,16 +236,16 @@ end
 	- desc: positions the object's columns
 --]]---------------------------------------------------------
 function newobject:PositionColumns()
-	
+
 	local x = 0
-	
+
 	for k, v in ipairs(self.children) do
 		v:SetPos(x, 0)
 		x = x + v.width
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -259,15 +259,15 @@ function newobject:AddColumn(name)
 	local list = internals[1]
 	local width = self.width
 	local height = self.height
-	
+
 	loveframes.objects["columnlistheader"]:new(name, self)
 	self:PositionColumns()
-	
+
 	list:SetSize(width, height)
 	list:SetPos(0, 0)
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -279,10 +279,10 @@ function newobject:AddRow(...)
 	local arg = {...}
 	local internals = self.internals
 	local list = internals[1]
-	
+
 	list:AddRow(arg)
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -293,7 +293,7 @@ function newobject:GetColumnSize()
 
 	local children = self.children
 	local numchildren = #self.children
-	
+
 	if numchildren > 0 then
 		local column    = self.children[1]
 		local colwidth  = column.width
@@ -302,7 +302,7 @@ function newobject:GetColumnSize()
 	else
 		return 0, 0
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -310,31 +310,31 @@ end
 	- desc: sets the object's size
 --]]---------------------------------------------------------
 function newobject:SetSize(width, height, r1, r2)
-	
+
 	local internals = self.internals
 	local list = internals[1]
-	
+
 	if r1 then
 		self.width = self.parent.width * width
 	else
 		self.width = width
 	end
-	
+
 	if r2 then
 		self.height = self.parent.height * height
 	else
 		self.height = height
 	end
-	
+
 	self:PositionColumns()
-	
+
 	list:SetSize(width, height)
 	list:SetPos(0, 0)
 	list:CalculateSize()
 	list:RedoLayout()
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -342,25 +342,25 @@ end
 	- desc: sets the object's width
 --]]---------------------------------------------------------
 function newobject:SetWidth(width, relative)
-	
+
 	local internals = self.internals
 	local list = internals[1]
-	
+
 	if relative then
 		self.width = self.parent.width * width
 	else
 		self.width = width
 	end
-	
+
 	self:PositionColumns()
-	
+
 	list:SetSize(width)
 	list:SetPos(0, 0)
 	list:CalculateSize()
 	list:RedoLayout()
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -368,25 +368,25 @@ end
 	- desc: sets the object's height
 --]]---------------------------------------------------------
 function newobject:SetHeight(height, relative)
-	
+
 	local internals = self.internals
 	local list = internals[1]
-	
+
 	if relative then
 		self.height = self.parent.height * height
 	else
 		self.height = height
 	end
-	
+
 	self:PositionColumns()
-	
+
 	list:SetSize(height)
 	list:SetPos(0, 0)
 	list:CalculateSize()
 	list:RedoLayout()
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -398,10 +398,10 @@ function newobject:SetMaxColorIndex(num)
 
 	local internals = self.internals
 	local list = internals[1]
-	
+
 	list.colorindexmax = num
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -412,10 +412,10 @@ function newobject:Clear()
 
 	local internals = self.internals
 	local list = internals[1]
-	
+
 	list:Clear()
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -429,17 +429,17 @@ function newobject:SetAutoScroll(bool)
 	local internals = self.internals
 	local list = internals[1]
 	local scrollbar = list:GetScrollBar()
-	
+
 	self.autoscroll = bool
-	
+
 	if list then
 		if scrollbar then
 			scrollbar.autoscroll = bool
 		end
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -452,7 +452,7 @@ function newobject:SetButtonScrollAmount(amount)
 	self.buttonscrollamount = amount
 	self.internals[1].buttonscrollamount = amount
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -463,7 +463,7 @@ end
 function newobject:GetButtonScrollAmount()
 
 	return self.buttonscrollamount
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -475,7 +475,7 @@ function newobject:SetMouseWheelScrollAmount(amount)
 	self.mousewheelscrollamount = amount
 	self.internals[1].mousewheelscrollamount = amount
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -485,7 +485,7 @@ end
 function newobject:GetButtonScrollAmount()
 
 	return self.mousewheelscrollamount
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -497,17 +497,17 @@ function newobject:SetColumnHeight(height)
 	local children = self.children
 	local internals = self.internals
 	local list = internals[1]
-	
+
 	self.columnheight = height
-	
+
 	for k, v in ipairs(children) do
 		v:SetHeight(height)
 	end
-	
+
 	list:CalculateSize()
 	list:RedoLayout()
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -520,7 +520,7 @@ function newobject:SetDTScrolling(bool)
 	self.dtscrolling = bool
 	self.internals[1].dtscrolling = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -531,7 +531,7 @@ end
 function newobject:GetDTScrolling()
 
 	return self.dtscrolling
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -542,16 +542,16 @@ end
 function newobject:SelectRow(row, ctrl)
 
 	local selectionenabled = self.selectionenabled
-	
+
 	if not selectionenabled then
 		return
 	end
-	
+
 	local list = self.internals[1]
 	local children = list.children
 	local multiselect = self.multiselect
 	local onrowselected = self.OnRowSelected
-	
+
 	for k, v in ipairs(children) do
 		if v == row then
 			if v.selected and ctrl then
@@ -568,9 +568,9 @@ function newobject:SelectRow(row, ctrl)
 			end
 		end
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -582,7 +582,7 @@ function newobject:DeselectRow(row)
 
 	row.selected = false
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -590,19 +590,19 @@ end
 	- desc: gets the object's selected rows
 --]]---------------------------------------------------------
 function newobject:GetSelectedRows()
-	
+
 	local rows = {}
 	local list = self.internals[1]
 	local children = list.children
-	
+
 	for k, v in ipairs(children) do
 		if v.selected then
 			table.insert(rows, v)
 		end
 	end
-	
+
 	return rows
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -614,7 +614,7 @@ function newobject:SetSelectionEnabled(bool)
 
 	self.selectionenabled = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -625,7 +625,7 @@ end
 function newobject:GetSelectionEnabled()
 
 	return self.selectionenabled
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -637,7 +637,7 @@ function newobject:SetMultiselectEnabled(bool)
 
 	self.multiselect = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -648,7 +648,7 @@ end
 function newobject:GetMultiselectEnabled()
 
 	return self.multiselect
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -658,15 +658,15 @@ end
 function newobject:RemoveColumn(id)
 
 	local children = self.children
-	
+
 	for k, v in ipairs(children) do
 		if k == id then
 			v:Remove()
 		end
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -676,15 +676,15 @@ end
 function newobject:SetColumnName(id, name)
 
 	local children = self.children
-	
+
 	for k, v in ipairs(children) do
 		if k == id then
 			v.name = name
 		end
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -694,15 +694,15 @@ end
 function newobject:GetColumnName(id)
 
 	local children = self.children
-	
+
 	for k, v in ipairs(children) do
 		if k == id then
 			return v.name
 		end
 	end
-	
+
 	return false
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -714,7 +714,7 @@ end
 			modifications.
 --]]---------------------------------------------------------
 function newobject:SizeToChildren(max)
-	
+
 	local oldheight = self.height
 	local list = self.internals[1]
 	local listchildren = list.children
@@ -724,15 +724,15 @@ function newobject:SizeToChildren(max)
 	local h = listchildren[1].height
 	local c = #listchildren
 	local height = buf + h*c
-	
+
 	if max then
-		height = math.min(max, oldheight) 
+		height = math.min(max, oldheight)
 	end
-	
+
 	self:SetSize(width, height)
 	self:PositionColumns()
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -744,11 +744,11 @@ function newobject:RemoveRow(id)
 	local list = self.internals[1]
 	local listchildren = list.children
 	local row = listchildren[id]
-	
+
 	if row then
 		row:Remove()
 	end
-	
+
 	list:CalculateSize()
 	list:RedoLayout()
 	return self
@@ -760,17 +760,17 @@ end
 	- desc: sets a cell's text
 --]]---------------------------------------------------------
 function newobject:SetCellText(text, rowid, columnid)
-	
+
 	local list = self.internals[1]
 	local listchildren = list.children
 	local row = listchildren[rowid]
-	
+
 	if row and row.columndata[columnid]then
 		row.columndata[columnid] = text
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -778,15 +778,15 @@ end
 	- desc: gets a cell's text
 --]]---------------------------------------------------------
 function newobject:GetCellText(rowid, columnid)
-	
+
 	local row = self.internals[1].children[rowid]
-	
+
 	if row and row.columndata[columnid] then
 		return row.columndata[columnid]
 	else
 		return false
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -798,15 +798,15 @@ function newobject:SetRowColumnData(rowid, columndata)
 	local list = self.internals[1]
 	local listchildren = list.children
 	local row = listchildren[rowid]
-	
+
 	if row then
 		for k, v in ipairs(columndata) do
 			row.columndata[k] = tostring(v)
 		end
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -816,13 +816,13 @@ end
 function newobject:GetTotalColumnWidth()
 
 	local width = 0
-	
+
 	for k, v in ipairs(self.children) do
 		width = width + v.width
 	end
-	
+
 	return width
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -842,9 +842,9 @@ function newobject:SetColumnWidth(id, width)
 		self.internals[1]:CalculateSize()
 		self.internals[1]:RedoLayout()
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -857,9 +857,9 @@ function newobject:GetColumnWidth(id)
 	if column then
 		return column.width
 	end
-	
+
 	return false
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -872,22 +872,22 @@ function newobject:ResizeColumns()
 	local children = self.children
 	local width = 0
 	local vbody = self.internals[1]:GetVerticalScrollBody()
-	
+
 	if vbody then
 		width = (self:GetWidth() - vbody:GetWidth())/#children
 	else
 		width = self:GetWidth()/#children
 	end
-	
+
 	for k, v in ipairs(children) do
 		v:SetWidth(width)
 		self:PositionColumns()
 		self.internals[1]:CalculateSize()
 		self.internals[1]:RedoLayout()
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -898,7 +898,7 @@ function newobject:SetDefaultColumnWidth(width)
 
 	self.defaultcolumnwidth = width
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -908,7 +908,7 @@ end
 function newobject:GetDefaultColumnWidth()
 
 	return self.defaultcolumnwidth
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -920,7 +920,7 @@ function newobject:SetColumnResizeEnabled(bool)
 
 	self.canresizecolumns = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -931,7 +931,7 @@ end
 function newobject:GetColumnResizeEnabled()
 
 	return self.canresizecolumns
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -944,21 +944,21 @@ function newobject:SizeColumnToData(columnid)
 	local column = self.children[columnid]
 	local list = self.internals[1]
 	local largest = 0
-	
+
 	for k, v in ipairs(list.children) do
 		local width = v:GetFont():getWidth(self:GetCellText(k, columnid))
 		if width > largest then
 			largest = width + v.textx
 		end
 	end
-	
+
 	if largest <= 0 then
 		largest = 10
 	end
-	
+
 	self:SetColumnWidth(columnid, largest)
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -969,15 +969,36 @@ function newobject:SetColumnOrder(curid, newid)
 
 	local column = self.children[curid]
 	local totalcolumns = #self.children
-	
+
 	if column and totalcolumns > 1 and newid <= totalcolumns and newid >= 1 then
 		column:Remove()
 		table.insert(self.children, newid, column)
 		self:PositionColumns()
 	end
-	
+
 	return self
-	
+
+end
+
+--[[---------------------------------------------------------
+	- func: SetRowsFont(font)
+	- desc: sets the font of the rows.
+--]]---------------------------------------------------------
+function newobject:SetAllRowsFont(font)
+	local list = self.internals[1]
+  for k, v in ipairs(list.children) do
+    v:SetFont(font)
+  end
+end
+
+--[[---------------------------------------------------------
+	- func: SetRowFont(font, id)
+	- desc: sets the font of the row with the provided id.
+--]]---------------------------------------------------------
+function newobject:SetRowFont(font, id)
+	local list = self.internals[1]
+  assert( id >= 1, "The id must be >= 1")
+  list.children[id]:SetFont(font)
 end
 
 ---------- module end ----------
