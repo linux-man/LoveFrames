@@ -143,9 +143,10 @@ function newobject:draw()
 	if drawfunc then
 		drawfunc(self)
 	end
-	
-	love.graphics.stencil(stencilfunc)
-	love.graphics.setStencilTest("greater", 0)
+
+        love.graphics.setStencilMode("replace", "always", 1) -- start stencil
+        stencilfunc()
+	love.graphics.setStencilMode("keep", "greater", 0)
 	
 	local internals = self.internals
 	if internals then
@@ -157,7 +158,7 @@ function newobject:draw()
 		end
 	end
 	
-	love.graphics.setStencilTest()
+        love.graphics.setStencilMode()
 	
 	local children = self.children
 	if #children > 0 then

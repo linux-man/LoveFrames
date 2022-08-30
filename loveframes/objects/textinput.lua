@@ -287,15 +287,16 @@ function newobject:draw()
 		stencilfunc = function() love.graphics.rectangle("fill", x, y, width - 16, height - 16) end
 	end
 	
-	love.graphics.stencil(stencilfunc)
-	love.graphics.setStencilTest("greater", 0)
+        love.graphics.setStencilMode("replace", "always", 1) -- start stencil
+        stencilfunc()
+	love.graphics.setStencilMode("keep", "greater", 0)
 	
 	local drawfunc = self.Draw or self.drawfunc
 	if drawfunc then
 		drawfunc(self)
 	end
 	
-	love.graphics.setStencilTest()
+        love.graphics.setStencilMode()
 	
 	local internals = self.internals
 	if internals then
