@@ -286,7 +286,7 @@ function newobject:draw()
 	if vbar and hbar then
 		stencilfunc = function() love.graphics.rectangle("fill", x, y, width - 16, height - 16) end
 	end
-	
+
         love.graphics.setStencilMode("replace", "always", 1) -- start stencil
         stencilfunc()
 	love.graphics.setStencilMode("keep", "greater", 0)
@@ -295,16 +295,16 @@ function newobject:draw()
 	if drawfunc then
 		drawfunc(self)
 	end
-	
-        love.graphics.setStencilMode()
-	
+
 	local internals = self.internals
 	if internals then
 		for k, v in ipairs(internals) do
 			v:draw()
 		end
 	end
-	
+
+        love.graphics.setStencilMode()
+
 	drawfunc = self.DrawOver or self.drawoverfunc
 	if drawfunc then
 		drawfunc(self)
