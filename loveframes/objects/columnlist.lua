@@ -128,6 +128,10 @@ function newobject:draw()
 	
 	-- set the object's draw order
 	self:SetDrawOrder()
+
+        love.graphics.setStencilMode("replace", "always", 1) -- start stencil
+        stencilfunc()
+	love.graphics.setStencilMode("keep", "greater", 0)
 		
 	local drawfunc = self.Draw or self.drawfunc
 	if drawfunc then
@@ -141,10 +145,6 @@ function newobject:draw()
 		end
 	end
 
-        love.graphics.setStencilMode("replace", "always", 1) -- start stencil
-        stencilfunc()
-	love.graphics.setStencilMode("keep", "greater", 0)
-	
 	local children = self.children
 	if children then
 		for k, v in ipairs(children) do
