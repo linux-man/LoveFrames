@@ -79,24 +79,26 @@ function loveframes.RegisterSkin(skin)
 		newskin = skin
 	end
 	
-	newskin.dir = dir
-	local images = {}
-	
-	local indeximages = loveframes.config["INDEXSKINIMAGES"]
-	if indeximages then
-		local imagelist = loveframes.GetDirectoryContents(imagedir)
-		local filename, extension, image
-		for k, v in ipairs(imagelist) do
-			extension = v.extension
-			filename = v.name .. "." .. extension
-			if extension == "png" then
-				image = love.graphics.newImage(v.fullpath)
-				image:setFilter("nearest", "nearest")
-				images[filename] = image
+	if newskin.dir ~= dir then
+		newskin.dir = dir
+		local images = newskin.images or {}
+		
+		local indeximages = loveframes.config["INDEXSKINIMAGES"]
+		if indeximages then
+			local imagelist = loveframes.GetDirectoryContents(imagedir)
+			local filename, extension, image
+			for k, v in ipairs(imagelist) do
+				extension = v.extension
+				filename = v.name .. "." .. extension
+				if extension == "png" then
+					image = love.graphics.newImage(v.fullpath)
+					image:setFilter("nearest", "nearest")
+					images[filename] = image
+				end
 			end
 		end
+		newskin.images = images
 	end
-	newskin.images = images
 	skins[name] = newskin
 end
 
