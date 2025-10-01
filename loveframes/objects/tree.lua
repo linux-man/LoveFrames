@@ -25,6 +25,7 @@ function newobject:initialize()
 	self.extrawidth = 0
 	self.extraheight = 0
 	self.buttonscrollamount = 0.10
+	self.mousewheelscrollamount = 10
 	self.vbar = false
 	self.hbar = false
 	self.internal = false
@@ -260,6 +261,39 @@ function newobject:mousereleased(x, y, button)
 	
 	for k, v in ipairs(self.children) do
 		v:mousereleased(x, y, button)
+	end
+
+end
+
+--[[---------------------------------------------------------
+	- func: wheelmoved(x, y)
+	- desc: called when the player moves a mouse wheel
+--]]------------------<---------------------------------------
+function newobject:wheelmoved(x, y)
+
+	local toplist = self:IsTopList()
+	local vbar = self.vbar
+	local hbar = self.hbar
+	local scrollamount = self.mousewheelscrollamount
+
+	if (vbar or hbar) and toplist then		
+		-- Vertical scrolling with y wheel movement
+		if vbar and y ~= 0 then
+			local vscrollbody = self:GetVerticalScrollBody()
+			if vscrollbody then
+				local vscrollbar = vscrollbody:GetScrollBar()
+				vscrollbar:Scroll(-y * scrollamount)
+			end
+		end
+
+		-- Horizontal scrolling with x wheel movement
+		if hbar and x ~= 0 then
+			local hscrollbody = self:GetHorizontalScrollBody()
+			if hscrollbody then
+				local hscrollbar = hscrollbody:GetScrollBar()
+				hscrollbar:Scroll(x * scrollamount)
+			end
+		end
 	end
 
 end
