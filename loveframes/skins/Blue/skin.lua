@@ -2046,6 +2046,7 @@ end
 
 function skin.treenode(object)
 
+	local skin = object:GetSkin()
 	local icon = object.icon
 	local buttonimage = skin.images["tree-node-button-open.png"]
 	local width = 0
@@ -2058,7 +2059,7 @@ function skin.treenode(object)
 		leftpadding = buttonimage:getWidth() + 5
 	end
 	
-	local iconwidth
+	local iconwidth = 0
 	if icon then
 		iconwidth = icon:getWidth()
 	end
@@ -2072,8 +2073,10 @@ function skin.treenode(object)
 	end
 
 	width = width + iconwidth + loveframes.basicfont:getWidth(object.text) + leftpadding
-	love.graphics.setColor(1, 1, 1, 1)
-	love.graphics.draw(icon, x + leftpadding, object.y)
+	if icon then
+		love.graphics.setColor(1, 1, 1, 1)
+		love.graphics.draw(icon, x + leftpadding, object.y)
+	end
 	love.graphics.setFont(loveframes.basicfont)
 	love.graphics.setColor(0, 0, 0, 1)
 	skin.PrintText(object.text, x + leftpadding + 2 + iconwidth, object.y + 2)
@@ -2084,6 +2087,7 @@ end
 
 function skin.treenodebutton(object)
 	
+	local skin = object:GetSkin()
 	local leftpadding = 15 * object.parent.level
 	local image
 	
@@ -2096,7 +2100,7 @@ function skin.treenodebutton(object)
 	image:setFilter("nearest", "nearest")
 	
 	love.graphics.setColor(1, 1, 1, 1)
-	love.graphics.draw(image, object.x, object.y)
+	love.graphics.draw(image, math.floor(object.x), math.floor(object.y))
 	
 	object:SetPos(2 + leftpadding, 3)
 	object:SetSize(image:getWidth(), image:getHeight())
