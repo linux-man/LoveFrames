@@ -1001,5 +1001,22 @@ function newobject:SetRowFont(font, id)
   list.children[id]:SetFont(font)
 end
 
+--[[---------------------------------------------------------
+	- func: GetSelectedRowIDs()
+	- desc: gets the ids of selected rows
+--]]---------------------------------------------------------
+function newobject:GetSelectedRowIDs()
+  local ids = {}
+  local rows = self["internals"][1]["children"]
+
+  for id, row in ipairs(rows) do
+    if row["selected"] then
+      table.insert(ids, id)
+    end
+  end
+
+  return ids
+end
+
 ---------- module end ----------
 end
