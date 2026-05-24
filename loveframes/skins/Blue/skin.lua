@@ -162,10 +162,11 @@ local function ParseHeaderText(str, hx, hwidth, tx)
 	
 	local font = love.graphics.getFont()
 	local twidth = love.graphics.getFont():getWidth(str)
+	local strLen = loveframes.utf8.len(str)
 	
 	if (tx + twidth) - hwidth/2 > hx + hwidth then
-		if #str > 1 then
-			return ParseHeaderText(loveframes.utf8.sub(str, 1, #str - 1), hx, hwidth, tx, twidth)
+		if strLen > 1 then
+			return ParseHeaderText(loveframes.utf8.sub(str, 1, strLen - 1), hx, hwidth, tx, twidth)
 		else
 			return str
 		end
@@ -178,10 +179,11 @@ end
 local function ParseRowText(str, rx, rwidth, tx1, tx2)
 
 	local twidth = love.graphics.getFont():getWidth(str)
+	local strLen = loveframes.utf8.len(str)
 	
 	if (tx1 + tx2) + twidth > rx + rwidth then
-		if #str > 1 then
-			return ParseRowText(loveframes.utf8.sub(str, 1, #str - 1), rx, rwidth, tx1, tx2)
+		if strLen > 1 then
+			return ParseRowText(loveframes.utf8.sub(str, 1, strLen - 1), rx, rwidth, tx1, tx2)
 		else
 			return str
 		end
