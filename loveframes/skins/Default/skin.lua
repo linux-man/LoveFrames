@@ -962,9 +962,6 @@ function skin.text(object)
 	local shadowyoffset = object.shadowyoffset
 	local shadowcolor = object.shadowcolor
 	local inlist, list = object:IsInList()
-	local printfunc = function(text, x, y)
-		love.graphics.print(text, math.floor(x + 0.5), math.floor(y + 0.5))
-	end
 	
 	for k, v in ipairs(textdata) do
 		local textx = v.x
@@ -981,7 +978,7 @@ function skin.text(object)
 				love.graphics.setFont(font)
 				if shadow then
 					love.graphics.setColor(unpack(shadowcolor))
-					printfunc(text, x + textx + shadowxoffset, y + texty + shadowyoffset)
+					skin.PrintText(text, x + textx + shadowxoffset, y + texty + shadowyoffset)
 				end
 				if link then
 					local linkcolor = v.linkcolor
@@ -995,13 +992,13 @@ function skin.text(object)
 				else
 					love.graphics.setColor(unpack(color))
 				end
-				printfunc(text, x + textx, y + texty)
+				skin.PrintText(text, x + textx, y + texty)
 			end
 		else
 			love.graphics.setFont(font)
 			if shadow then
 				love.graphics.setColor(unpack(shadowcolor))
-				printfunc(text, x + textx + shadowxoffset, y + texty + shadowyoffset)
+				skin.PrintText(text, x + textx + shadowxoffset, y + texty + shadowyoffset)
 			end
 			if link then
 				local linkcolor = v.linkcolor
@@ -1015,7 +1012,7 @@ function skin.text(object)
 			else
 				love.graphics.setColor(unpack(color))
 			end
-			printfunc(text, x + textx, y + texty)
+			skin.PrintText(text, x + textx, y + texty)
 		end
 	end
 end
